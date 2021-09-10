@@ -31,25 +31,16 @@ function reducer(state, { type, payload }) {
   switch (type) {
     case UPDATE: {
       const { tokenAddress, data } = payload
-      return {
-        ...state,
-        [tokenAddress]: {
-          ...state?.[tokenAddress],
-          ...data
-        }
+      const newState = [...state]
+      newState[tokenAddress] = {
+        ...state[tokenAddress],
+        ...data
       }
+      return newState
     }
     case UPDATE_TOP_TOKENS: {
       const { topTokens } = payload
-      let added = {}
-      topTokens &&
-        topTokens.map(token => {
-          return (added[token.id] = token)
-        })
-      return {
-        ...state,
-        ...added
-      }
+      return topTokens
     }
 
     case UPDATE_TOKEN_TXNS: {
@@ -178,24 +169,7 @@ const getTopTokens = async () => {
   // let oneDayBlock = await getBlockFromTimestamp(utcOneDayBack)
   // let twoDayBlock = await getBlockFromTimestamp(utcTwoDaysBack)
 
-  try {
-    let tokens = await fetchAPI(PROTOCOLS_API)
-    let bulkResults = tokens.map(token => {
-      return { ...token, priceUSD: token?.derivedETH * 1 || 0 }
-      //data.TVL = data.TVL;
-      // data.oneDayVolumeUSD = parseFloat(oneDayVolumeUSD)
-      // data.volumeChangeUSD = volumeChangeUSD
-      // data.priceChangeUSD = priceChangeUSD
-      // data.liquidityChangeUSD = getPercentChange(currentLiquidityUSD ?? 0, oldLiquidityUSD ?? 0)
-      // data.oneDayTxns = oneDayTxns
-      // data.txnChange = txnChange
-    })
-    return bulkResults
-
-    // calculate percentage changes and daily changes
-  } catch (e) {
-    console.log(e)
-  }
+  return await fetchAPI(PROTOCOLS_API)
 }
 
 const getTokenByProtocol = async protocol => {
@@ -207,7 +181,7 @@ const getTokenByProtocol = async protocol => {
   }
 }
 
-const getTokenData = async (address, protocol, ethPrice, ethPriceOld) => {
+const getTokenData = async (address, protocol) => {
   try {
     if (protocol) {
       const tokenData = await getTokenByProtocol(protocol?.split(' ').join('-'))
@@ -250,19 +224,13 @@ export function Updater() {
 
 export function useTokenData(tokenId, protocol = '') {
   const [state, { update }] = useTokenDataContext()
-  const [ethPrice, ethPriceOld] = useEthPrice()
   const [oldProtocol, setOldProtocol] = useState()
   const tokenData = state?.[tokenId]
 
   useEffect(() => {
-    if (!tokenData && ethPrice && ethPriceOld && tokenId) {
-      getTokenData(tokenId, protocol, ethPrice, ethPriceOld).then(data => {
-        update(data?.id, data)
-      })
-    }
     if (protocol && oldProtocol !== protocol) {
-      getTokenData(tokenId, protocol, ethPrice, ethPriceOld).then(data => {
-        update(data?.id, data)
+      getTokenData(tokenId, protocol).then(data => {
+        update(tokenId, data)
       })
       setOldProtocol(protocol)
     }
