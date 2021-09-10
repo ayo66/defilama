@@ -90,6 +90,7 @@ function GlobalPage({ chain, denomination, history }) {
   const [tokensList, otherChains] = useMemo(() => {
     const chainsSet = new Set([])
 
+    console.log(allTokensOriginal)
     let filteredTokens = allTokensOriginal.map(token => {
       if (token.category === "Chain") {
         return null
