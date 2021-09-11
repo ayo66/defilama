@@ -42,52 +42,6 @@ function reducer(state, { type, payload }) {
       const { topTokens } = payload
       return topTokens
     }
-
-    case UPDATE_TOKEN_TXNS: {
-      const { address, transactions } = payload
-      return {
-        ...state,
-        [address]: {
-          ...state?.[address],
-          txns: transactions
-        }
-      }
-    }
-    case UPDATE_CHART_DATA: {
-      const { address, chartData } = payload
-      return {
-        ...state,
-        [address]: {
-          ...state?.[address],
-          chartData
-        }
-      }
-    }
-
-    case UPDATE_PRICE_DATA: {
-      const { address, data, timeWindow, interval } = payload
-      return {
-        ...state,
-        [address]: {
-          ...state?.[address],
-          [timeWindow]: {
-            ...state?.[address]?.[timeWindow],
-            [interval]: data
-          }
-        }
-      }
-    }
-
-    case UPDATE_ALL_PAIRS: {
-      const { address, allPairs } = payload
-      return {
-        ...state,
-        [address]: {
-          ...state?.[address],
-          [TOKEN_PAIRS_KEY]: allPairs
-        }
-      }
-    }
     default: {
       throw Error(`Unexpected action type in DataContext reducer: '${type}'.`)
     }
