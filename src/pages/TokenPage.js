@@ -106,6 +106,7 @@ function TokenPage({ protocol, history, denomination, selectedChain }) {
   const allTokens = useAllTokenData()
   const id = getTokenIdFromName(allTokens, protocol)
   const tokenData = useTokenData(id, protocol)
+  console.log(tokenData)
   let address = tokenData.address
   let { name, symbol, url, description, tvl, priceUSD, priceChangeUSD, misrepresentedTokens, logo, audits, category, tvlList: chartData, tokensInUsd, tokens, twitter, chain, chains, chainTvls, historicalChainTvls, audit_links, methodology, staking, pool2, module: codeModule } = tokenData
   let blockExplorerLink = 'https://etherscan.io/address/' + address;
