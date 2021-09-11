@@ -535,7 +535,7 @@ export function getTokenIdFromName(tokensObject, protocol) {
   try {
     const tokens = tokensObject
     const filteredToken = tokens.findIndex(token => token.slug === protocol)
-    return filteredToken || ''
+    return filteredToken
   } catch (error) {
     return false
   }
