@@ -12,13 +12,19 @@ import { useMedia } from 'react-use'
 
 function AllTokensPage(props) {
   const { category, categoryName } = props
-  let allTokens = Object.values(useAllTokenData())
+  let allTokens = useAllTokenData()
 
   if (category) {
     allTokens = allTokens.filter((token) => (token.category || '').toLowerCase() === category.toLowerCase() && token.category !== "Chain")
   } else {
     allTokens = allTokens.filter((token) => token.category !== "Chain")
   }
+
+  const tokens = allTokens.map(token => ({
+    ...token,
+    mcaptvl: (token.tvl !== 0 && token.mcap) ? token.mcap / token.tvl : null,
+    fdvtvl: (token.tvl !== 0 && token.fdv) ? token.fdv / token.tvl : null,
+  }))
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -39,7 +45,7 @@ function AllTokensPage(props) {
           {!below600 && <Search small={true} />}
         </RowBetween>
         <Panel style={{ marginTop: '6px', padding: below600 && '1rem 0 0 0 ' }}>
-          <TopTokenList tokens={allTokens} itemMax={below600 ? 50 : 100} />
+          <TopTokenList tokens={tokens} itemMax={below600 ? 50 : 100} />
         </Panel>
       </FullWrapper>
     </PageWrapper>
