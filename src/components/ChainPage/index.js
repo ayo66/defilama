@@ -111,7 +111,7 @@ function GlobalPage({ selectedChain = 'All', chainsSet, filteredProtocols, chart
   if (protocolTotals.length > 0) {
     topToken.name = protocolTotals[0]?.name
     topToken.tvl = protocolTotals[0]?.tvl
-    if (topToken.name === 'AnySwap') {
+    if (topToken.name === 'Multichain') {
       topToken.name = protocolTotals[1]?.name
       topToken.tvl = protocolTotals[1]?.tvl
     }
